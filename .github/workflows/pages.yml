@@ -63,7 +63,7 @@ jobs:
                   target.parent.mkdir(parents=True, exist_ok=True)
                   target.write_bytes(bundle.read(item))
           patch = Path('update.zip')
-          if hashlib.sha256(patch.read_bytes()).hexdigest() != 'd96fc0b6a63ef0f1929a75153315ab4be04d9dc122ad4f6cca443a646d690397':
+          if hashlib.sha256(patch.read_bytes()).hexdigest() != '7f7858d79e578ad4014a76e385294bbbe105e15de01f5b300ba7a3d120cbbd73':
               raise SystemExit('The update checksum does not match.')
           with zipfile.ZipFile(patch) as bundle:
               for item in bundle.infolist():
