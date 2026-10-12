@@ -43,12 +43,18 @@ jobs:
           --output tashi-art-2.zip
           "https://github.com/monsheri12-ui/tashi-in-tibet/releases/download/v1.0.6/tashi-art-2.zip"
 
+      - name: Download tashi-captions-developer.zip
+        run: >-
+          curl --fail --location --retry 3
+          --output tashi-captions-developer.zip
+          "https://github.com/monsheri12-ui/tashi-in-tibet/releases/download/v1.0.6/tashi-captions-developer.zip"
+
       - name: Verify and assemble the game
         run: |
           python3 - <<'PY'
           from pathlib import Path, PurePosixPath
           import hashlib, json, zipfile
-          packages = [['bundle.zip', '77bc075b8ee02b286c4e37d99882e2f9f8bca485ca12edb84c095319540add49'], ['tashi-developer.zip', 'dba34a4d17d3563ff78ff584997bc27a92d30bc0edf726518d43fde3977e67a7'], ['tashi-art-1.zip', '4384077955a35b91d492d316cd49431d239c3331e166e8fa76c35ebafb116183'], ['tashi-art-2.zip', 'e741b2038738483cd14e0217a3d5ec17665b5c549c0b8e0f8460929f5ec550d3']]
+          packages = [["bundle.zip", "77bc075b8ee02b286c4e37d99882e2f9f8bca485ca12edb84c095319540add49"], ["tashi-developer.zip", "dba34a4d17d3563ff78ff584997bc27a92d30bc0edf726518d43fde3977e67a7"], ["tashi-art-1.zip", "4384077955a35b91d492d316cd49431d239c3331e166e8fa76c35ebafb116183"], ["tashi-art-2.zip", "e741b2038738483cd14e0217a3d5ec17665b5c549c0b8e0f8460929f5ec550d3"], ["tashi-captions-developer.zip", "815e0b1d3eafca72ee0f2c2a8d5b15713b4630e692f28c11ed1c0fb57dc3dede"]]
           output = Path('dist')
           output.mkdir(exist_ok=True)
           for number, (name, expected) in enumerate(packages):
