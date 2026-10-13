@@ -49,12 +49,18 @@ jobs:
           --output tashi-captions-dev-independent.zip
           "https://github.com/monsheri12-ui/tashi-in-tibet/releases/download/v1.0.6/tashi-captions-dev-independent.zip"
 
+      - name: Download tashi-room-developer.zip
+        run: >-
+          curl --fail --location --retry 3
+          --output tashi-room-developer.zip
+          "https://github.com/${{ github.repository }}/releases/download/v1.0.5/tashi-room-developer.zip"
+
       - name: Verify and assemble the game
         run: |
           python3 - <<'PY'
           from pathlib import Path, PurePosixPath
           import hashlib, json, zipfile
-          packages = [["bundle.zip", "77bc075b8ee02b286c4e37d99882e2f9f8bca485ca12edb84c095319540add49"], ["tashi-developer.zip", "dba34a4d17d3563ff78ff584997bc27a92d30bc0edf726518d43fde3977e67a7"], ["tashi-art-1.zip", "4384077955a35b91d492d316cd49431d239c3331e166e8fa76c35ebafb116183"], ["tashi-art-2.zip", "e741b2038738483cd14e0217a3d5ec17665b5c549c0b8e0f8460929f5ec550d3"], ["tashi-captions-dev-independent.zip", "b22e4029591d1d32d155bc665195514f4d9f418183dd02763f472b05700f1793"]]
+          packages = [["bundle.zip", "77bc075b8ee02b286c4e37d99882e2f9f8bca485ca12edb84c095319540add49"], ["tashi-developer.zip", "dba34a4d17d3563ff78ff584997bc27a92d30bc0edf726518d43fde3977e67a7"], ["tashi-art-1.zip", "4384077955a35b91d492d316cd49431d239c3331e166e8fa76c35ebafb116183"], ["tashi-art-2.zip", "e741b2038738483cd14e0217a3d5ec17665b5c549c0b8e0f8460929f5ec550d3"], ["tashi-captions-dev-independent.zip", "b22e4029591d1d32d155bc665195514f4d9f418183dd02763f472b05700f1793"], ["tashi-room-developer.zip", "150929e146bfd7227ea8689906c21cf9da7e76eb3401469a217ee7140748bc34"]]
           output = Path('dist')
           output.mkdir(exist_ok=True)
           for number, (name, expected) in enumerate(packages):
@@ -91,6 +97,10 @@ jobs:
           application = (output / 'assets/js/game-29.js').read_text()
           if 'developerBuild' not in application or "KEY='tibetan-fox-working-week-v1'" in application:
               raise SystemExit('The independent developer build is missing or uses the main progress key.')
+          locale = (output / 'assets/js/game-02.js').read_text()
+          sound = (output / 'assets/js/game-00.js').read_text()
+          if 'tibetan-fox-ui-language' in locale or 'tashi-cat-sound' in sound:
+              raise SystemExit('Language and sound settings crossed between projects.')
           print('Prepared', sum(p.is_file() for p in output.rglob('*')), 'files for publication.')
           PY
 
