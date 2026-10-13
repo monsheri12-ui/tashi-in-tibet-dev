@@ -67,12 +67,18 @@ jobs:
           --output tashi-reception-developer.zip
           "https://github.com/${{ github.repository }}/releases/download/v1.0.5/tashi-reception-developer.zip"
 
+      - name: Download tashi-objects-developer.zip
+        run: >-
+          curl --fail --location --retry 3
+          --output tashi-objects-developer.zip
+          "https://github.com/${{ github.repository }}/releases/download/v1.0.5/tashi-objects-developer.zip"
+
       - name: Verify and assemble the game
         run: |
           python3 - <<'PY'
           from pathlib import Path, PurePosixPath
           import hashlib, json, zipfile
-          packages = [["bundle.zip", "77bc075b8ee02b286c4e37d99882e2f9f8bca485ca12edb84c095319540add49"], ["tashi-developer.zip", "dba34a4d17d3563ff78ff584997bc27a92d30bc0edf726518d43fde3977e67a7"], ["tashi-art-1.zip", "4384077955a35b91d492d316cd49431d239c3331e166e8fa76c35ebafb116183"], ["tashi-art-2.zip", "e741b2038738483cd14e0217a3d5ec17665b5c549c0b8e0f8460929f5ec550d3"], ["tashi-captions-dev-independent.zip", "b22e4029591d1d32d155bc665195514f4d9f418183dd02763f472b05700f1793"], ["tashi-room-developer.zip", "150929e146bfd7227ea8689906c21cf9da7e76eb3401469a217ee7140748bc34"], ["tashi-loading-developer.zip", "a45ec67cab67a8909d61ceb4b5ef80bbf79ad43204233cf291ae077ff32e7ee8"], ["tashi-reception-developer.zip", "19c0eacb8ee29a078fe3c77d913e72a204c8dc25c36d510b98623ff0dce8e594"]]
+          packages = [["bundle.zip", "77bc075b8ee02b286c4e37d99882e2f9f8bca485ca12edb84c095319540add49"], ["tashi-developer.zip", "dba34a4d17d3563ff78ff584997bc27a92d30bc0edf726518d43fde3977e67a7"], ["tashi-art-1.zip", "4384077955a35b91d492d316cd49431d239c3331e166e8fa76c35ebafb116183"], ["tashi-art-2.zip", "e741b2038738483cd14e0217a3d5ec17665b5c549c0b8e0f8460929f5ec550d3"], ["tashi-captions-dev-independent.zip", "b22e4029591d1d32d155bc665195514f4d9f418183dd02763f472b05700f1793"], ["tashi-room-developer.zip", "150929e146bfd7227ea8689906c21cf9da7e76eb3401469a217ee7140748bc34"], ["tashi-loading-developer.zip", "a45ec67cab67a8909d61ceb4b5ef80bbf79ad43204233cf291ae077ff32e7ee8"], ["tashi-reception-developer.zip", "19c0eacb8ee29a078fe3c77d913e72a204c8dc25c36d510b98623ff0dce8e594"], ["tashi-objects-developer.zip", "a2c4b1ea0207c9e497ec641a8a9a5da6ec92af701f69a21601ea0b7c178d03fe"]]
           output = Path('dist')
           output.mkdir(exist_ok=True)
           for number, (name, expected) in enumerate(packages):
