@@ -468,6 +468,40 @@ jobs:
           print('Animation audit release verified:',expected['version'])
           PY
 
+      - name: Apply verified developer catalogue contrast fix
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          root=Path('dist')
+          before={'assets/developer.css': '1c4babf46883cec793fb617b579a405be33a19c19ad5a1cbd73284d56ddd1657', 'index.html': '55e40e9351d39253e5ce76101e2aae9bf6a7b4e93b35be7c53f76d144af9bba6', 'assets/manifest.json': '28d351a9253e682af8249a15847820c54b4774cb565c155504675ebf276bbe1b'}
+          after={'assets/developer.css': '90d14dbc9bd433e690987596785e430f90c864d610c3e647f1bdb92a74795f4d', 'index.html': '8dcb983984b9d4bf03e931a5082e1771149adf34b791fee32f101f43fca8246f', 'assets/manifest.json': '28d351a9253e682af8249a15847820c54b4774cb565c155504675ebf276bbe1b'}
+          for name,wanted in before.items():
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==wanted,name
+          p=root/'assets/developer.css'
+          s=p.read_text()
+          assert s.count('.dev-header button{display:none}')==1
+          p.write_text(s.replace('.dev-header button{display:none}','.dev-header button{display:none;color:#243d32}'))
+          p=root/'index.html'
+          s=p.read_text()
+          assert s.count('dev-1.0.5.14')==33
+          p.write_text(s.replace('dev-1.0.5.14','dev-1.0.5.15'))
+          p=root/'assets/manifest.json'
+          m=json.loads(p.read_text())
+          m['htmlBytes']=(root/'index.html').stat().st_size
+          scripts=sorted((root/'assets/js').glob('game-[0-9][0-9].js'))
+          assert len(scripts)==30
+          m['scriptBytes']=sum(q.stat().st_size for q in scripts)
+          assert len(m['resources'])==499
+          for name,meta in m['resources'].items():
+              q=root/name
+              meta.update(bytes=q.stat().st_size,sha256=hashlib.sha256(q.read_bytes()).hexdigest())
+          p.write_text(json.dumps(m,ensure_ascii=False,separators=(',',':'))+'\n')
+          for name,wanted in after.items():
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==wanted,name
+          print('Developer catalogue contrast verified: dev-1.0.5.15')
+          PY
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
